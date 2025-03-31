@@ -16,7 +16,15 @@ getWeatherButton.addEventListener("click", async (e) => {
 //function that builds content for current/todays weather
 function buildToday(weatherData) {
   //weatherData will be the converted data
-  console.log(weatherData);
+  let currentDay = document.querySelector("#current-weather");
+  let currentWeather = document.querySelector(`#current-details`);
+  currentDay.style.backgroundImage = pickBackgroundImage(weatherData)
+  //kind of think you could build dynamic elements instead, for description, city name, date, time, humidity, temp now, temp low, temp high, precipitation so far, precip chance 
+}
+
+//function that picks a specific image to use as a background image to current weather and future weather days
+function pickBackgroundImage(){
+    //I think use days[0].icon 
 }
 
 //error reporting functionality for when users try to enter invalid data to the input field
