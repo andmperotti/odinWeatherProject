@@ -12,7 +12,7 @@ async function getWeather(city) {
     //convert response to json from promise
     let convertedData = await resultPromise.json();
     //temporarily log data for now
-    console.log(convertedData);
+    return convertedData
   } catch (err) {
     console.log(err);
   }
