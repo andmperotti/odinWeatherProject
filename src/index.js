@@ -1,2 +1,2 @@
-import { uiController } from "./UIController.js";
+import "./UIController.js";
 import "./styles.css";
