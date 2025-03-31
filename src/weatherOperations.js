@@ -1,17 +1,21 @@
+import { dateOperations } from "./dateOperations.js";
 //function to return current weather and next 7 days
 async function getWeather(city) {
-  return await fetch(
-    `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${city}?key=${process.env.API_KEY}`,
-  );
+  try {
+    let todaysDate = dateOperations.todayDateString;
+    let dateInSevenDay = dateOperations.sevenDaysFromToday;
+    //query for todays weather and the next 7 days
+    let resultPromise = await fetch(
+      `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${city}/${todaysDate}/${dateInSevenDay}?key=${process.env.API_KEY}`,
+      { mode: "cors" },
+    );
+    //convert response to json from promise
+    let convertedData = await resultPromise.json();
+    //temporarily log data for now
+    console.log(convertedData);
+  } catch (err) {
+    console.log(err);
+  }
 }
-//function that builds content for current/todays weather
-function buildToday(todaysWeather) {}
-//function to build future days
-
-//function to build future days for all the future days we received
-
-//event listener on 'Search' button in the html that triggers getWeather and then uses the build functions to fill in the information
-
-//error reporting functionality for when users try to enter invalid data to the input field
 
 export { getWeather };
