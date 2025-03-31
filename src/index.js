@@ -1,4 +1,2 @@
-import { getWeather } from "./weatherOperations.js";
+import { uiController } from "./UIController.js";
 import "./styles.css";
-
-getWeather("san-francisco");
