@@ -15,14 +15,4 @@ header {
   display: grid;
   grid-template-columns: 8fr 2fr;
   grid-template-rows: repeat(1fr, 3);
-  grid-template-areas:
-    "title ."
-    "title button"
-    "title .";
-}
-header > h1 {
-  grid-area: title;
-}
-header > button {
-  grid-area: button;
 }
