@@ -3,10 +3,10 @@ import { dateOperations } from "./dateOperations.js";
 async function getWeather(city) {
   try {
     let todaysDate = dateOperations.todayDateString;
-    let dateInSevenDay = dateOperations.sevenDaysFromToday;
+    let dateInSevenDays = dateOperations.sevenDaysFromToday;
     //query for todays weather and the next 7 days
     let resultPromise = await fetch(
-      `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${city}/${todaysDate}/${dateInSevenDay}?key=${process.env.API_KEY}`,
+      `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${city}/${todaysDate}/${dateInSevenDays}?key=${process.env.API_KEY}`,
       { mode: "cors" },
     );
     //convert response to json from promise
