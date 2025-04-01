@@ -90,8 +90,6 @@ function buildToday(weatherData) {
   currentDay.style.background = `no-repeat url(${backgroundImage})`;
   currentDay.style.backgroundSize = "cover";
 
-  currentDay.style.color = pickTextColor(backgroundImage);
-
   //call the function to fill in the next 7 days weather information (using slice to skip over the current day aka days[0])
   fillNextSeven(weatherData.days.slice(1));
 }
@@ -140,20 +138,7 @@ function pickBackgroundImage(iconData) {
       break;
   }
 }
-//might need a function to change text color depending on the background img
-function pickTextColor(backgroundImage) {
-  switch (backgroundImage) {
-    case rainyImg:
-      return "white";
-      break;
-    case cloudyImg:
-      return "white";
-      break;
-    case sunnyImg:
-      return "black";
-      break;
-  }
-}
+
 //function to fill in  the next 7 days of weather information
 function fillNextSeven(weatherDaysArr) {
   //for loop to iterate over next 7 days of weatherData
@@ -170,29 +155,34 @@ function fillNextSeven(weatherDaysArr) {
     tempDaySection.appendChild(tempConditions);
     //low/max temp range
     let tempLowHigh = document.createElement("p");
-    tempLowHigh.textContent = `${weatherDaysArr[i].tempmin} / ${weatherDaysArr[i].tempmax}`;
+    tempLowHigh.textContent = `Temp low: ${weatherDaysArr[i].tempmin} / Temp high: ${weatherDaysArr[i].tempmax}`;
     tempDaySection.appendChild(tempLowHigh);
     //if precipitation then how much is anticipated
     if (weatherDaysArr[i].precip > 0) {
       let temmpPrecipitation = document.createElement("p");
-      temmpPrecipitation.textContent = weatherDaysArr[i].precip;
+      temmpPrecipitation.textContent = `Precipitation: ${weatherDaysArr[i].precip}`;
       tempDaySection.appendChild(temmpPrecipitation);
     }
     //if snow then how much is anticipated
     if (weatherDaysArr[i].snow > 0) {
       let tempSnow = document.createElement("p");
-      tempSnow.textContent = weatherDaysArr[i].snow;
+      tempSnow.textContent = `Snow: ${weatherDaysArr[i].snow}`;
       tempDaySection.appendChild(tempSnow);
     }
     //if wind then how fast and in what direction
     if (weatherDaysArr[i].windspeed > 0) {
       let tempWind = document.createElement("p");
-      tempWind.textContent = `${weatherDaysArr[i].windspeed} ${getWindDirection(weatherDaysArr[i].winddir)}`;
+      tempWind.textContent = `Wind: ${weatherDaysArr[i].windspeed} ${getWindDirection(weatherDaysArr[i].winddir)}`;
       tempDaySection.appendChild(tempWind);
     }
+    //change background image of tempDay
+    let backgroundImage = pickBackgroundImage(weatherDaysArr[i].icon);
+    tempDaySection.style.background = `no-repeat url(${backgroundImage})`;
+    tempDaySection.style.backgroundSize = "cover";
   }
 }
 
 //error reporting functionality for when users try to enter invalid data to the input field
 
 //button listener to change Fahrenheit to Celsius, and miles per hour to kilometers per hour for wind readouts
+//when button is clicked convert every F to C, and every MPH to KPH...
