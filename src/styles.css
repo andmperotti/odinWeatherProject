@@ -1,3 +1,7 @@
-body {
-  background-color: red;
+#current-weather {
+  display: grid;
+}
+
+#current-weather > p {
+  display: inline;
 }
