@@ -21,7 +21,6 @@ function buildToday(weatherData) {
 
   //weatherData will be the converted data
   let currentDay = document.querySelector("#current-weather");
-  //lets build dynamic elements and fill them with data from the response:
 
   //location
   let currentLocation = document.createElement("h1");
@@ -92,6 +91,9 @@ function buildToday(weatherData) {
   currentDay.style.backgroundSize = "cover";
 
   currentDay.style.color = pickTextColor(backgroundImage);
+
+  //call the function to fill in the next 7 days weather information (using slice to skip over the current day aka days[0])
+  fillNextSeven(weatherData.days.slice(1));
 }
 
 //function that calculates direction of wind
@@ -152,6 +154,45 @@ function pickTextColor(backgroundImage) {
       break;
   }
 }
+//function to fill in  the next 7 days of weather information
+function fillNextSeven(weatherDaysArr) {
+  //for loop to iterate over next 7 days of weatherData
+  for (let i = 0; i < weatherDaysArr.length; i++) {
+    //dynamic element
+    let tempDaySection = document.querySelector(`#day-${i + 1}`);
+    //date
+    let tempDate = document.createElement("h3");
+    tempDate.textContent = weatherDaysArr[i].datetime;
+    tempDaySection.appendChild(tempDate);
+    //conditions, which is a much shorter summary of the days weather than description, because I want these elements to be smaller
+    let tempConditions = document.createElement("p");
+    tempConditions.textContent = weatherDaysArr[i].conditions;
+    tempDaySection.appendChild(tempConditions);
+    //low/max temp range
+    let tempLowHigh = document.createElement("p");
+    tempLowHigh.textContent = `${weatherDaysArr[i].tempmin} / ${weatherDaysArr[i].tempmax}`;
+    tempDaySection.appendChild(tempLowHigh);
+    //if precipitation then how much is anticipated
+    if (weatherDaysArr[i].precip > 0) {
+      let temmpPrecipitation = document.createElement("p");
+      temmpPrecipitation.textContent = weatherDaysArr[i].precip;
+      tempDaySection.appendChild(temmpPrecipitation);
+    }
+    //if snow then how much is anticipated
+    if (weatherDaysArr[i].snow > 0) {
+      let tempSnow = document.createElement("p");
+      tempSnow.textContent = weatherDaysArr[i].snow;
+      tempDaySection.appendChild(tempSnow);
+    }
+    //if wind then how fast and in what direction
+    if (weatherDaysArr[i].windspeed > 0) {
+      let tempWind = document.createElement("p");
+      tempWind.textContent = `${weatherDaysArr[i].windspeed} ${getWindDirection(weatherDaysArr[i].winddir)}`;
+      tempDaySection.appendChild(tempWind);
+    }
+  }
+}
+
 //error reporting functionality for when users try to enter invalid data to the input field
 
-//button to change Fahrenheit to Celsius
+//button listener to change Fahrenheit to Celsius, and miles per hour to kilometers per hour for wind readouts
