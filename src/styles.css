@@ -16,3 +16,13 @@ header {
   grid-template-columns: 8fr 2fr;
   grid-template-rows: repeat(1fr, 3);
 }
+#future-days {
+  display: grid;
+  grid-template-columns: 7;
+  grid-template-rows: 1;
+}
+
+#future-days > section {
+  display: inline;
+  width: calc(100% / 7);
+}
