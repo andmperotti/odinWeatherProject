@@ -1,7 +1,7 @@
 import { getWeather } from "./weatherOperations.js";
-import rainyGif from "./gifs/rainy.gif";
-import sunnyGif from "./gifs/sunny.gif";
-import cloudyGif from "./gifs/cloudy.gif";
+import rainyImg from "./images/rainy.jpg";
+import sunnyImg from "./images/sunny.jpg";
+import cloudyImg from "./images/cloudy.jpg";
 
 let getWeatherButton = document.querySelector("#get-weather-button");
 
@@ -21,7 +21,6 @@ function buildToday(weatherData) {
 
   //weatherData will be the converted data
   let currentDay = document.querySelector("#current-weather");
-  currentDay.style.backgroundImage = pickBackgroundImage(weatherData);
   //lets build dynamic elements and fill them with data from the response:
 
   //location
@@ -88,9 +87,13 @@ function buildToday(weatherData) {
   currentDay.appendChild(currentConditions);
 
   //change background image of currentDay
-  currentDay.style.background = `no-repeat url(${pickBackgroundImage(weatherData.days[0].icon)})`;
+  let backgroundImage = pickBackgroundImage(weatherData.days[0].icon);
+  currentDay.style.background = `no-repeat url(${backgroundImage})`;
   currentDay.style.backgroundSize = "cover";
+
+  currentDay.style.color = pickTextColor(backgroundImage);
 }
+
 //function that calculates direction of wind
 function getWindDirection(directionDeg) {
   switch (true) {
@@ -125,18 +128,30 @@ function getWindDirection(directionDeg) {
 function pickBackgroundImage(iconData) {
   switch (iconData) {
     case "clear-day":
-      return sunnyGif;
+      return sunnyImg;
       break;
     case "rain":
-      return rainyGif;
+      return rainyImg;
       break;
     case "partly-cloudy-day":
-      return cloudyGif;
+      return cloudyImg;
       break;
   }
 }
-//might need a function to change text color depending on the background gif
-
+//might need a function to change text color depending on the background img
+function pickTextColor(backgroundImage) {
+  switch (backgroundImage) {
+    case rainyImg:
+      return "white";
+      break;
+    case cloudyImg:
+      return "white";
+      break;
+    case sunnyImg:
+      return "black";
+      break;
+  }
+}
 //error reporting functionality for when users try to enter invalid data to the input field
 
 //button to change Fahrenheit to Celsius
