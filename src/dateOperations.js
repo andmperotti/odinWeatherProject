@@ -30,8 +30,8 @@ export const dateOperations = (function () {
       let futureYear = currentDateYear;
       let futureMonth;
       let futureDay = 7 - daysLeftInMonth;
-      //incremnt month first, and then check whether that changes the year,
-      //if so incremnet year and change month to january
+      //increment month first, and then check whether that changes the year,
+      //if so increment year and change month to january
       if (currentDateMonth + 1 === 13) {
         futureMonth = 1;
         futureYear = currentDateYear + 1;
@@ -45,8 +45,8 @@ export const dateOperations = (function () {
 
   function checkForLeap(year) {
     if (year % 400 === 0 || (year % 4 === 0 && year % 100 != 0)) {
-      //only looks for centuries divisble by 400
-      // or non century years that are divisble by 4
+      //only looks for centuries divisible by 400
+      // or non century years that are divisible by 4
       return true;
     } else {
       return false;
