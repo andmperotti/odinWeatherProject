@@ -4,30 +4,46 @@ import sunnyImg from "./images/sunny.jpg";
 import cloudyImg from "./images/cloudy.jpg";
 
 let getWeatherButton = document.querySelector("#get-weather-button");
+let convertButton = document.querySelector("#convert");
+let currentDay = document.querySelector("#current-weather");
+let futureDays = document.querySelector("#future-days");
+let futureWeather = document.querySelector("#future-weather");
 
 //event listener on 'Search' button in the html that triggers getWeather and then uses the build functions to fill in the information
 getWeatherButton.addEventListener("click", async (e) => {
   e.preventDefault();
   let userCityInput = document.querySelector("#city-input-field").value;
   let convertedUserCity = userCityInput.split(" ").join("-");
-  let returnedData;
-
-  returnedData = await getWeather(convertedUserCity);
+  let returnedData = await getWeather(convertedUserCity);
+  //wipe any pre existing content (current day, future weather heading, future weather sections)
+  while (currentDay.firstChild) {
+    currentDay.removeChild(currentDay.firstChild);
+  }
+  futureWeather.removeChild(futureWeather.firstChild);
+  for (let i = 1; i < 8; i++) {
+    let tempFutureSection = document.querySelector(`#day-${i}`);
+    while (tempFutureSection.firstChild) {
+      tempFutureSection.removeChild(tempFutureSection.firstChild);
+    }
+  }
+  //call function to build current day
   buildToday(returnedData);
 });
+
 //function that builds content for current/todays weather
 function buildToday(weatherData) {
-  //wipe any pre existing content
-
-  //weatherData will be the converted data
-  let currentDay = document.querySelector("#current-weather");
-
+  let newCurrentHeading = document.createElement("h2");
+  newCurrentHeading.textContent = "Current Weather: ";
+  currentDay.appendChild(newCurrentHeading);
+  //unhide Current Weather heading
+  let currentWeatherHeading = document.querySelector("#current-weather h2");
+  currentWeatherHeading.display = "block";
   //location
-  let currentLocation = document.createElement("h1");
+  let currentLocation = document.createElement("h3");
   currentLocation.textContent = `Location: ${weatherData.resolvedAddress}`;
-  currentDay.before(currentLocation);
+  currentDay.appendChild(currentLocation);
 
-  //date?
+  //date
   let currentDayDate = document.createElement("p");
   currentDayDate.textContent = `Date: ${weatherData.days[0].datetime}`;
   currentDay.appendChild(currentDayDate);
@@ -141,6 +157,11 @@ function pickBackgroundImage(iconData) {
 
 //function to fill in  the next 7 days of weather information
 function fillNextSeven(weatherDaysArr) {
+  //add heading before futureDays section
+  let futureWeatherHeading = document.createElement("h2");
+  futureWeatherHeading.textContent = "Weather over the next week:";
+  futureDays.before(futureWeatherHeading);
+
   //for loop to iterate over next 7 days of weatherData
   for (let i = 0; i < weatherDaysArr.length; i++) {
     //dynamic element
@@ -182,7 +203,11 @@ function fillNextSeven(weatherDaysArr) {
   }
 }
 
-//error reporting functionality for when users try to enter invalid data to the input field
-
 //button listener to change Fahrenheit to Celsius, and miles per hour to kilometers per hour for wind readouts
-//when button is clicked convert every F to C, and every MPH to KPH...
+convertButton.addEventListener("click", (e) => {});
+//variable to keep track of Imperial or Metric values
+let conversionVersion = "Imperial";
+//function that takes in mph or kph and depending on variable^ returns the opposite as output
+//function that takes in F or C and depending on variable ^^ returns the opposite as output
+
+//error reporting functionality for when users try to enter invalid data to the input field
