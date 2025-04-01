@@ -26,3 +26,8 @@ header {
   display: inline;
   width: calc(100% / 7);
 }
+
+#current-weather,
+#future-days {
+  color: white;
+}
