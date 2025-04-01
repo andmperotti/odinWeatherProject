@@ -5,3 +5,24 @@
 #current-weather > p {
   display: inline;
 }
+
+section[id^="day"] {
+  /* temporary style for seeing next 7 days*/
+  border: 1px solid black;
+}
+
+header {
+  display: grid;
+  grid-template-columns: 8fr 2fr;
+  grid-template-rows: repeat(1fr, 3);
+  grid-template-areas:
+    "title ."
+    "title button"
+    "title .";
+}
+header > h1 {
+  grid-area: title;
+}
+header > button {
+  grid-area: button;
+}
