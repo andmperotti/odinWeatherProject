@@ -1,4 +1,7 @@
 import { getWeather } from "./weatherOperations.js";
+import rainyGif from "./gifs/rainy.gif";
+import sunnyGif from "./gifs/sunny.gif";
+import cloudyGif from "./gifs/cloudy.gif";
 
 let getWeatherButton = document.querySelector("#get-weather-button");
 
@@ -6,7 +9,6 @@ let getWeatherButton = document.querySelector("#get-weather-button");
 getWeatherButton.addEventListener("click", async (e) => {
   e.preventDefault();
   let userCityInput = document.querySelector("#city-input-field").value;
-  console.log(userCityInput);
   let convertedUserCity = userCityInput.split(" ").join("-");
   let returnedData;
 
@@ -77,13 +79,17 @@ function buildToday(weatherData) {
 
   //wind speed and direction
   let currentWind = document.createElement("p");
-  currentWind.textContent = `${weatherData.days[0].windspeed} ${getWindDirection(weatherData.days[0].winddir)}`;
+  currentWind.textContent = `Wind speed & Direction: ${weatherData.days[0].windspeed} ${getWindDirection(weatherData.days[0].winddir)}`;
   currentDay.appendChild(currentWind);
 
   //day conditions
   let currentConditions = document.createElement("p");
-  currentConditions.textContent = weatherData.days[0].conditions;
+  currentConditions.textContent = `Days conditions: ${weatherData.days[0].conditions}`;
   currentDay.appendChild(currentConditions);
+
+  //change background image of currentDay
+  currentDay.style.background = `no-repeat url(${pickBackgroundImage(weatherData.days[0].icon)})`;
+  currentDay.style.backgroundSize = "cover";
 }
 //function that calculates direction of wind
 function getWindDirection(directionDeg) {
@@ -116,9 +122,20 @@ function getWindDirection(directionDeg) {
 }
 
 //function that picks a specific image to use as a background image to current weather and future weather days
-function pickBackgroundImage() {
-  //I think use days[0].icon
+function pickBackgroundImage(iconData) {
+  switch (iconData) {
+    case "clear-day":
+      return sunnyGif;
+      break;
+    case "rain":
+      return rainyGif;
+      break;
+    case "partly-cloudy-day":
+      return cloudyGif;
+      break;
+  }
 }
+//might need a function to change text color depending on the background gif
 
 //error reporting functionality for when users try to enter invalid data to the input field
 
