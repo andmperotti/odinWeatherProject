@@ -181,7 +181,7 @@ function fillNextSeven(weatherDaysArr) {
     //if precipitation then how much is anticipated
     if (weatherDaysArr[i].precip > 0) {
       let temmpPrecipitation = document.createElement("p");
-      temmpPrecipitation.textContent = `Precipitation: ${weatherDaysArr[i].precip}`;
+      temmpPrecipitation.textContent = `Precipitation: ${weatherDaysArr[i].precip} inches`;
       tempDaySection.appendChild(temmpPrecipitation);
     }
     //if snow then how much is anticipated
@@ -204,10 +204,14 @@ function fillNextSeven(weatherDaysArr) {
 }
 
 //button listener to change Fahrenheit to Celsius, and miles per hour to kilometers per hour for wind readouts
-convertButton.addEventListener("click", (e) => {});
+convertButton.addEventListener("click", (e) => {
+  //triggers below functions
+});
 //variable to keep track of Imperial or Metric values
 let conversionVersion = "Imperial";
 //function that takes in mph or kph and depending on variable^ returns the opposite as output
 //function that takes in F or C and depending on variable ^^ returns the opposite as output
+
+//what if i used these functions to add mph/F after values when argument does not include mph/F? and then when the argument does include F or C it converts it to the other, likewise for MPH to KPH
 
 //error reporting functionality for when users try to enter invalid data to the input field
