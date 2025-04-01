@@ -6,11 +6,6 @@
   display: inline;
 }
 
-section[id^="day"] {
-  /* temporary style for seeing next 7 days*/
-  border: 1px solid black;
-}
-
 header {
   display: grid;
   grid-template-columns: 8fr 2fr;
@@ -28,6 +23,14 @@ header {
 }
 
 #current-weather,
-#future-days {
+section[id^="day"] {
   color: white;
+  text-align: center;
+}
+
+#current-weather {
+  border-radius: 2%;
+}
+section[id^="day"] {
+  border-radius: 3%;
 }
