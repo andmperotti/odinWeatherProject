@@ -13,14 +13,15 @@
       </button>
     </header>
     <section>
-      <form action="">
+      <form action="" onsubmit="return false">
         <label for="city-input-field"
           >City Name:
           <input
             type="text"
             minlength="3"
             id="city-input-field"
-            placeholder="Minimum 3 character length"
+            placeholder="Ex: 'Seattle' or 'Seattle, WA'"
+            required
           />
         </label>
         <button id="get-weather-button">Get Weather</button>
