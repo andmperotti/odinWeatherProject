@@ -7,6 +7,7 @@ let getWeatherButton = document.querySelector("#get-weather-button");
 let convertButton = document.querySelector("#convert");
 let currentDay = document.querySelector("#current-weather");
 let futureWeatherHeading = document.querySelector("#future-weather-heading");
+let entryForm = document.querySelector("#entry-form");
 
 let returnedData;
 
@@ -19,29 +20,43 @@ getWeatherButton.addEventListener("click", async (e) => {
     //modal to tell user the application is loading
     loadingModal();
     returnedData = await getWeather(convertedUserCity);
-    //add imperial data lengths to starter values
-    for (let i = 0; i < returnedData.days.length; i++) {
-      returnedData.days[i].tempmax = String(
-        `${returnedData.days[i].tempmax} F°`,
-      );
-      returnedData.days[i].tempmin = String(
-        `${returnedData.days[i].tempmin} F°`,
-      );
-      returnedData.days[i].temp = String(`${returnedData.days[i].temp} F°`);
-      returnedData.days[i].precip = String(
-        `${returnedData.days[i].precip} inches`,
-      );
-      returnedData.days[i].snow = String(`${returnedData.days[i].snow} inches`);
-      returnedData.days[i].windspeed = String(
-        `${returnedData.days[i].windspeed} mph `,
-      );
+    if (!returnedData.error) {
+      //add imperial data lengths to starter values
+      for (let i = 0; i < returnedData.days.length; i++) {
+        returnedData.days[i].tempmax = String(
+          `${returnedData.days[i].tempmax} F°`,
+        );
+        returnedData.days[i].tempmin = String(
+          `${returnedData.days[i].tempmin} F°`,
+        );
+        returnedData.days[i].temp = String(`${returnedData.days[i].temp} F°`);
+        returnedData.days[i].precip = String(
+          `${returnedData.days[i].precip} inches`,
+        );
+        returnedData.days[i].snow = String(
+          `${returnedData.days[i].snow} inches`,
+        );
+        returnedData.days[i].windspeed = String(
+          `${returnedData.days[i].windspeed} mph `,
+        );
+      }
+      hideLoadingModal();
+      //call function to build current day
+      buildToday(returnedData);
+      //call the function to fill in the next 7 days weather information (using slice to skip over the current day aka days[0])
+      fillNextSeven(returnedData.days.slice(1));
+    } else {
+      hideLoadingModal();
+      console.log(returnedData);
+      let errorSpan = document.createElement("span");
+      errorSpan.textContent = "Bad Input, please try again!";
+      errorSpan.id = "error-span";
+      errorSpan.style.color = "red";
+      entryForm.after(errorSpan);
+      setTimeout(() => {
+        errorSpan.remove();
+      }, 3000);
     }
-    hideLoadingModal();
-
-    //call function to build current day
-    buildToday(returnedData);
-    //call the function to fill in the next 7 days weather information (using slice to skip over the current day aka days[0])
-    fillNextSeven(returnedData.days.slice(1));
   }
 });
 
@@ -228,55 +243,59 @@ function fillNextSeven(weatherDaysArr) {
 
 //button listener to change Fahrenheit to Celsius, and miles per hour to kilometers per hour for wind readouts
 convertButton.addEventListener("click", (e) => {
-  //if the data is in Imperial, convert it to Metric
-  if (returnedData.days[0].temp.split(" ")[1] === "F°") {
-    for (let i = 0; i < returnedData.days.length; i++) {
-      returnedData.days[i].tempmax = String(
-        `${convertToCel(returnedData.days[i].tempmax.split(" ")[0])} C°`,
-      );
-      returnedData.days[i].tempmin = String(
-        `${convertToCel(returnedData.days[i].tempmin.split(" ")[0])} C°`,
-      );
-      returnedData.days[i].temp = String(
-        `${convertToCel(returnedData.days[i].temp.split(" ")[0])} C°`,
-      );
-      returnedData.days[i].precip = String(
-        `${convertInchesToMillimeters(returnedData.days[i].precip.split(" ")[0])} millimeters`,
-      );
-      returnedData.days[i].snow = String(
-        `${convertInchesToMillimeters(returnedData.days[i].snow.split(" "[0]))} millimeters`,
-      );
-      returnedData.days[i].windspeed = String(
-        `${convertMilesToKilometers(returnedData.days[i].windspeed.split(" ")[0])} kmh `,
-      );
+  //if there is returned data then convert it
+  if (returnedData?.resolvedAddress && !returnedData?.error) {
+    //if the data is in Imperial, convert it to Metric
+    if (returnedData.days[0].temp.split(" ")[1] === "F°") {
+      for (let i = 0; i < returnedData.days.length; i++) {
+        returnedData.days[i].tempmax = String(
+          `${convertToCel(returnedData.days[i].tempmax.split(" ")[0])} C°`,
+        );
+        returnedData.days[i].tempmin = String(
+          `${convertToCel(returnedData.days[i].tempmin.split(" ")[0])} C°`,
+        );
+        returnedData.days[i].temp = String(
+          `${convertToCel(returnedData.days[i].temp.split(" ")[0])} C°`,
+        );
+        returnedData.days[i].precip = String(
+          `${convertInchesToMillimeters(returnedData.days[i].precip.split(" ")[0])} millimeters`,
+        );
+        returnedData.days[i].snow = String(
+          `${convertInchesToMillimeters(returnedData.days[i].snow.split(" "[0]))} millimeters`,
+        );
+        returnedData.days[i].windspeed = String(
+          `${convertMilesToKilometers(returnedData.days[i].windspeed.split(" ")[0])} kmh `,
+        );
+      }
+      //otherwise if the data is in Metric convert it to Imperial
+    } else if (returnedData.days[0].temp.split(" ")[1] === "C°") {
+      for (let i = 0; i < returnedData.days.length; i++) {
+        returnedData.days[i].tempmax = String(
+          `${convertToF(returnedData.days[i].tempmax.split(" ")[0])} F°`,
+        );
+        returnedData.days[i].tempmin = String(
+          `${convertToF(returnedData.days[i].tempmin.split(" ")[0])} F°`,
+        );
+        returnedData.days[i].temp = String(
+          `${convertToF(returnedData.days[i].temp.split(" ")[0])} F°`,
+        );
+        returnedData.days[i].precip = String(
+          `${convertMillimetersToInches(returnedData.days[i].precip.split(" ")[0])} inches`,
+        );
+        returnedData.days[i].snow = String(
+          `${convertMillimetersToInches(returnedData.days[i].snow.split(" "[0]))} inches`,
+        );
+        //^will have to pass in the first value of the split of this and convert to number for the if statement, likewise for rain
+        returnedData.days[i].windspeed = String(
+          `${convertKilometersToMiles(returnedData.days[i].windspeed.split(" ")[0])} mph `,
+        );
+      }
     }
-    //otherwise if the data is in Metric convert it to Imperial
-  } else if (returnedData.days[0].temp.split(" ")[1] === "C°") {
-    for (let i = 0; i < returnedData.days.length; i++) {
-      returnedData.days[i].tempmax = String(
-        `${convertToF(returnedData.days[i].tempmax.split(" ")[0])} F°`,
-      );
-      returnedData.days[i].tempmin = String(
-        `${convertToF(returnedData.days[i].tempmin.split(" ")[0])} F°`,
-      );
-      returnedData.days[i].temp = String(
-        `${convertToF(returnedData.days[i].temp.split(" ")[0])} F°`,
-      );
-      returnedData.days[i].precip = String(
-        `${convertMillimetersToInches(returnedData.days[i].precip.split(" ")[0])} inches`,
-      );
-      returnedData.days[i].snow = String(
-        `${convertMillimetersToInches(returnedData.days[i].snow.split(" "[0]))} inches`,
-      );
-      //^will have to pass in the first value of the split of this and convert to number for the if statement, likewise for rain
-      returnedData.days[i].windspeed = String(
-        `${convertKilometersToMiles(returnedData.days[i].windspeed.split(" ")[0])} mph `,
-      );
-    }
+    //triggers below functions
+    buildToday(returnedData);
+    fillNextSeven(returnedData.days.slice(1));
   }
-  //triggers below functions
-  buildToday(returnedData);
-  fillNextSeven(returnedData.days.slice(1));
+  //otherwise do nothing and let them click the button repeatedly
 });
 
 function convertToCel(tempF) {
@@ -312,5 +331,4 @@ function hideLoadingModal() {
   document.querySelector("#loading-modal").remove();
 }
 
-//error reporting functionality for when users try to enter invalid data to the input field
-//api constraint minlength of 3 show error below input field using a span
+//ok error showing up, however thats whenever there is an error at all, I'd like to be able to dwindle down when an input doesn't yield a result vs our app is out of api requests or the api is down, etc
