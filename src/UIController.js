@@ -46,8 +46,11 @@ getWeatherButton.addEventListener("click", async (e) => {
       //call the function to fill in the next 7 days weather information (using slice to skip over the current day aka days[0])
       fillNextSeven(returnedData.days.slice(1));
     } else {
+      //else if there is an error
       hideLoadingModal();
+      //log the return data so i can read the error data
       console.log(returnedData);
+      let returnedError = returnedData.error;
       let errorSpan = document.createElement("span");
       errorSpan.textContent = "Bad Input, please try again!";
       errorSpan.id = "error-span";
@@ -332,3 +335,8 @@ function hideLoadingModal() {
 }
 
 //ok error showing up, however thats whenever there is an error at all, I'd like to be able to dwindle down when an input doesn't yield a result vs our app is out of api requests or the api is down, etc
+
+//can i use what i have for when returnedData.error === SyntaxError?
+//and add another message when returnedData.error === different values?
+
+//so i tried to use the response's error property, which returned another object, that had a message property with a specific value when i typed in a bad location to output the input error message to the user however it doesn't execute the code and throws the error into the console because I think from unhandledRejectionError default behavior
