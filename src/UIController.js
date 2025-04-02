@@ -6,38 +6,46 @@ import cloudyImg from "./images/cloudy.jpg";
 let getWeatherButton = document.querySelector("#get-weather-button");
 let convertButton = document.querySelector("#convert");
 let currentDay = document.querySelector("#current-weather");
-let futureDays = document.querySelector("#future-days");
-let futureWeather = document.querySelector("#future-weather");
+let futureWeatherHeading = document.querySelector("#future-weather-heading");
+
+let returnedData;
 
 //event listener on 'Search' button in the html that triggers getWeather and then uses the build functions to fill in the information
 getWeatherButton.addEventListener("click", async (e) => {
   e.preventDefault();
   let userCityInput = document.querySelector("#city-input-field").value;
   let convertedUserCity = userCityInput.split(" ").join("-");
-  let returnedData = await getWeather(convertedUserCity);
-  //wipe any pre existing content (current day, future weather heading, future weather sections)
-  while (currentDay.firstChild) {
-    currentDay.removeChild(currentDay.firstChild);
+  returnedData = await getWeather(convertedUserCity);
+  //add imperial data lengths to starter values
+  for (let i = 0; i < returnedData.days.length; i++) {
+    returnedData.days[i].tempmax = String(`${returnedData.days[i].tempmax} F°`);
+    returnedData.days[i].tempmin = String(`${returnedData.days[i].tempmin} F°`);
+    returnedData.days[i].temp = String(`${returnedData.days[i].temp} F°`);
+    returnedData.days[i].precip = String(
+      `${returnedData.days[i].precip} inches`,
+    );
+    returnedData.days[i].snow = String(`${returnedData.days[i].snow} inches`);
+    returnedData.days[i].windspeed = String(
+      `${returnedData.days[i].windspeed} mph `,
+    );
   }
-  futureWeather.removeChild(futureWeather.firstChild);
-  for (let i = 1; i < 8; i++) {
-    let tempFutureSection = document.querySelector(`#day-${i}`);
-    while (tempFutureSection.firstChild) {
-      tempFutureSection.removeChild(tempFutureSection.firstChild);
-    }
-  }
+
   //call function to build current day
   buildToday(returnedData);
 });
 
 //function that builds content for current/todays weather
 function buildToday(weatherData) {
+  //wipe any child elements in the current-day eleemnt if there is anything
+  while (currentDay.firstChild) {
+    currentDay.removeChild(currentDay.firstChild);
+  }
+
+  //heading to describe what the user is seeing
   let newCurrentHeading = document.createElement("h2");
   newCurrentHeading.textContent = "Current Weather: ";
   currentDay.appendChild(newCurrentHeading);
-  //unhide Current Weather heading
-  let currentWeatherHeading = document.querySelector("#current-weather h2");
-  currentWeatherHeading.display = "block";
+
   //location
   let currentLocation = document.createElement("h3");
   currentLocation.textContent = `Location: ${weatherData.resolvedAddress}`;
@@ -66,20 +74,23 @@ function buildToday(weatherData) {
   //if then precipitation (is that so far or planned?)
   //maybe if precipprob then show precip
   //i believe precip is forecasted precipitation for the day
-
-  let currentPrecipitationForecast = document.createElement("p");
-  currentPrecipitationForecast.textContent = `Predicted precipitation for day: ${weatherData.days[0].precip || "none"}`;
-  currentDay.appendChild(currentPrecipitationForecast);
-
+  if (weatherData.days[0].precip > 0) {
+    let currentPrecipitationForecast = document.createElement("p");
+    currentPrecipitationForecast.id = "current-precipitation-forecast";
+    currentPrecipitationForecast.textContent = `Predicted precipitation for day: ${weatherData.days[0].precip}`;
+    currentDay.appendChild(currentPrecipitationForecast);
+  }
   //humidity level
   let currentHumidity = document.createElement("p");
   currentHumidity.textContent = `Current Humidity: ${weatherData.days[0].humidity}`;
   currentDay.appendChild(currentHumidity);
 
   //if then snow (>0)  (is that so far or planned?)
-  let currentSnowForecast = document.createElement("p");
-  currentSnowForecast.textContent = `Snow Amount Forecasted: ${weatherData.days[0].snow || "none"}`;
-  currentDay.appendChild(currentSnowForecast);
+  if (weatherData.days[0].snow > 0) {
+    let currentSnowForecast = document.createElement("p");
+    currentSnowForecast.textContent = `Snow Amount Forecasted: ${weatherData.days[0].snow}`;
+    currentDay.appendChild(currentSnowForecast);
+  }
 
   //sunrise sunset times
   let currentSunriseSunset = document.createElement("p");
@@ -93,7 +104,7 @@ function buildToday(weatherData) {
 
   //wind speed and direction
   let currentWind = document.createElement("p");
-  currentWind.textContent = `Wind speed & Direction: ${weatherData.days[0].windspeed} ${getWindDirection(weatherData.days[0].winddir)}`;
+  currentWind.textContent = `Wind speed & Direction: ${weatherData.days[0].windspeed} towards ${getWindDirection(weatherData.days[0].winddir)}`;
   currentDay.appendChild(currentWind);
 
   //day conditions
@@ -157,10 +168,14 @@ function pickBackgroundImage(iconData) {
 
 //function to fill in  the next 7 days of weather information
 function fillNextSeven(weatherDaysArr) {
-  //add heading before futureDays section
-  let futureWeatherHeading = document.createElement("h2");
-  futureWeatherHeading.textContent = "Weather over the next week:";
-  futureDays.before(futureWeatherHeading);
+  futureWeatherHeading.style.display = "block";
+  //wipe any preexisting data
+  for (let i = 1; i < 8; i++) {
+    let tempFutureSection = document.querySelector(`#day-${i}`);
+    while (tempFutureSection.firstChild) {
+      tempFutureSection.removeChild(tempFutureSection.firstChild);
+    }
+  }
 
   //for loop to iterate over next 7 days of weatherData
   for (let i = 0; i < weatherDaysArr.length; i++) {
@@ -205,13 +220,75 @@ function fillNextSeven(weatherDaysArr) {
 
 //button listener to change Fahrenheit to Celsius, and miles per hour to kilometers per hour for wind readouts
 convertButton.addEventListener("click", (e) => {
+  //if the data is in Imperial, convert it to Metric
+  if (returnedData.days[0].temp.split(" ")[1] === "F°") {
+    for (let i = 0; i < returnedData.days.length; i++) {
+      returnedData.days[i].tempmax = String(
+        `${convertToCel(returnedData.days[i].tempmax.split(" ")[0])} C°`,
+      );
+      returnedData.days[i].tempmin = String(
+        `${convertToCel(returnedData.days[i].tempmin.split(" ")[0])} C°`,
+      );
+      returnedData.days[i].temp = String(
+        `${convertToCel(returnedData.days[i].temp.split(" ")[0])} C°`,
+      );
+      returnedData.days[i].precip = String(
+        `${convertInchesToMillimeters(returnedData.days[i].precip.split(" ")[0])} millimeters`,
+      );
+      returnedData.days[i].snow = String(
+        `${convertInchesToMillimeters(returnedData.days[i].snow.split(" "[0]))} millimeters`,
+      );
+      returnedData.days[i].windspeed = String(
+        `${convertMilesToKilometers(returnedData.days[i].windspeed.split(" ")[0])} kmh `,
+      );
+    }
+    //otherwise if the data is in Metric convert it to Imperial
+  } else if (returnedData.days[0].temp.split(" ")[1] === "C°") {
+    for (let i = 0; i < returnedData.days.length; i++) {
+      returnedData.days[i].tempmax = String(
+        `${convertToF(returnedData.days[i].tempmax.split(" ")[0])} F°`,
+      );
+      returnedData.days[i].tempmin = String(
+        `${convertToF(returnedData.days[i].tempmin.split(" ")[0])} F°`,
+      );
+      returnedData.days[i].temp = String(
+        `${convertToF(returnedData.days[i].temp.split(" ")[0])} F°`,
+      );
+      returnedData.days[i].precip = String(
+        `${convertMillimetersToInches(returnedData.days[i].precip.split(" ")[0])} inches`,
+      );
+      returnedData.days[i].snow = String(
+        `${convertMillimetersToInches(returnedData.days[i].snow.split(" "[0]))} inches`,
+      );
+      //^will have to pass in the first value of the split of this and convert to number for the if statement, likewise for rain
+      returnedData.days[i].windspeed = String(
+        `${convertKilometersToMiles(returnedData.days[i].windspeed.split(" ")[0])} mph `,
+      );
+    }
+  }
   //triggers below functions
+  buildToday(returnedData);
+  fillNextSeven(returnedData.days.slice(1));
 });
-//variable to keep track of Imperial or Metric values
-let conversionVersion = "Imperial";
-//function that takes in mph or kph and depending on variable^ returns the opposite as output
-//function that takes in F or C and depending on variable ^^ returns the opposite as output
 
-//what if i used these functions to add mph/F after values when argument does not include mph/F? and then when the argument does include F or C it converts it to the other, likewise for MPH to KPH
-
+function convertToCel(tempF) {
+  return ((tempF - 32) * (5 / 9)).toFixed(2);
+}
+function convertToF(tempC) {
+  return (tempC * 1.8 + 32).toFixed(2);
+}
+function convertMilesToKilometers(miles) {
+  return (miles * 1.609344).toFixed(2);
+}
+function convertKilometersToMiles(kilometers) {
+  return (kilometers * 0.6213711922).toFixed(2);
+}
+function convertInchesToMillimeters(inches) {
+  return (inches * 25.4).toFixed(2);
+}
+function convertMillimetersToInches(millimeters) {
+  return (millimeters / 25.4).toFixed(2);
+}
 //error reporting functionality for when users try to enter invalid data to the input field
+
+//loading modal /animation while request is processing
