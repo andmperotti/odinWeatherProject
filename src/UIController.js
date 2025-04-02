@@ -8,6 +8,7 @@ let convertButton = document.querySelector("#convert");
 let currentDay = document.querySelector("#current-weather");
 let futureWeatherHeading = document.querySelector("#future-weather-heading");
 let entryForm = document.querySelector("#entry-form");
+let userInputField = document.querySelector("#city-input-field");
 
 let returnedData;
 
@@ -17,6 +18,7 @@ getWeatherButton.addEventListener("click", async (e) => {
   let convertedUserCity = userCityInput.split(" ").join("-");
   //if users entry is at least 3 characters long, run
   if (userCityInput.length > 2) {
+    userInputField.setCustomValidity("");
     //modal to tell user the application is loading
     loadingModal();
     returnedData = await getWeather(convertedUserCity);
@@ -60,7 +62,15 @@ getWeatherButton.addEventListener("click", async (e) => {
         errorSpan.remove();
       }, 3000);
     }
+  } else {
+    userInputField.setCustomValidity(
+      "Input needs to be at least 3 characters long",
+    );
   }
+});
+
+userInputField.addEventListener("input", (e) => {
+  userInputField.setCustomValidity("");
 });
 
 //function that builds content for current/todays weather
