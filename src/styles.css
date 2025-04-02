@@ -1,7 +1,10 @@
 #current-weather {
   display: grid;
+  margin-top: 15px;
 }
-
+form {
+  text-align: center;
+}
 #current-weather > p {
   display: inline;
 }
@@ -13,13 +16,9 @@ header {
 }
 #future-days {
   display: grid;
-  grid-template-columns: 7;
+  grid-template-columns: repeat(7, 1fr);
   grid-template-rows: 1;
-}
-
-#future-days > section {
-  display: inline;
-  width: calc(100% / 7);
+  gap: 5px;
 }
 
 #current-weather,
@@ -33,4 +32,27 @@ section[id^="day"] {
 }
 section[id^="day"] {
   border-radius: 3%;
+}
+#future-weather-heading {
+  display: none;
+}
+
+input {
+  width: 200px;
+}
+#loading-modal {
+  display: flex;
+  justify-content: center;
+}
+#loading-content {
+  position: absolute;
+  font-size: 35px;
+  border: 5px solid black;
+}
+
+input:focus:invalid {
+  outline: 1px solid red;
+}
+input:focus:valid {
+  outline: 1px solid green;
 }
