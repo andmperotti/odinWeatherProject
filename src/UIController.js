@@ -15,14 +15,12 @@ let returnedData;
 //event listener on 'Search' button in the html that triggers getWeather and then uses the build functions to fill in the information
 getWeatherButton.addEventListener("click", async (e) => {
   let userCityInput = document.querySelector("#city-input-field").value;
-  let convertedUserCity = userCityInput.split(" ").join("-");
-
   //if users entry is at least 3 characters long, run
   if (userCityInput.length > 2) {
     userInputField.setCustomValidity("");
     //modal to tell user the application is loading
     loadingModal();
-    returnedData = await getWeather(convertedUserCity);
+    returnedData = await getWeather(userCityInput);
     //if there is no error in the return object
     if (!returnedData.error) {
       //add imperial data lengths to starter values
