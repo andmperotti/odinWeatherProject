@@ -16,12 +16,14 @@ let returnedData;
 getWeatherButton.addEventListener("click", async (e) => {
   let userCityInput = document.querySelector("#city-input-field").value;
   let convertedUserCity = userCityInput.split(" ").join("-");
+
   //if users entry is at least 3 characters long, run
   if (userCityInput.length > 2) {
     userInputField.setCustomValidity("");
     //modal to tell user the application is loading
     loadingModal();
     returnedData = await getWeather(convertedUserCity);
+    //if there is no error in the return object
     if (!returnedData.error) {
       //add imperial data lengths to starter values
       for (let i = 0; i < returnedData.days.length; i++) {
@@ -50,17 +52,33 @@ getWeatherButton.addEventListener("click", async (e) => {
     } else {
       //else if there is an error
       hideLoadingModal();
-      //log the return data so i can read the error data
-      console.log(returnedData);
+
       let returnedError = returnedData.error;
       let errorSpan = document.createElement("span");
-      errorSpan.textContent = "Bad Input, please try again!";
-      errorSpan.id = "error-span";
-      errorSpan.style.color = "red";
-      entryForm.after(errorSpan);
-      setTimeout(() => {
-        errorSpan.remove();
-      }, 3000);
+
+      if (
+        returnedError.toString() ===
+        `SyntaxError: Unexpected token 'B', "Bad API Re"... is not valid JSON`
+      ) {
+        //if error resulting from bad input:
+        errorSpan.textContent = "Bad Input, please try again!";
+        errorSpan.id = "error-span";
+        errorSpan.style.color = "red";
+        entryForm.after(errorSpan);
+        setTimeout(() => {
+          errorSpan.remove();
+        }, 3000);
+      } else {
+        //if error resulting from too many api requests or api being down:
+        errorSpan.textContent =
+          "Application or data source error, please try again later";
+        errorSpan.id = "error-span";
+        errorSpan.style.color = "red";
+        entryForm.after(errorSpan);
+        setTimeout(() => {
+          errorSpan.remove();
+        }, 3000);
+      }
     }
   } else {
     userInputField.setCustomValidity(
