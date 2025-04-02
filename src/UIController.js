@@ -32,6 +32,8 @@ getWeatherButton.addEventListener("click", async (e) => {
 
   //call function to build current day
   buildToday(returnedData);
+  //call the function to fill in the next 7 days weather information (using slice to skip over the current day aka days[0])
+  fillNextSeven(returnedData.days.slice(1));
 });
 
 //function that builds content for current/todays weather
@@ -116,9 +118,6 @@ function buildToday(weatherData) {
   let backgroundImage = pickBackgroundImage(weatherData.days[0].icon);
   currentDay.style.background = `no-repeat url(${backgroundImage})`;
   currentDay.style.backgroundSize = "cover";
-
-  //call the function to fill in the next 7 days weather information (using slice to skip over the current day aka days[0])
-  fillNextSeven(weatherData.days.slice(1));
 }
 
 //function that calculates direction of wind
