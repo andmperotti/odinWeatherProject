@@ -12,28 +12,37 @@ let returnedData;
 
 //event listener on 'Search' button in the html that triggers getWeather and then uses the build functions to fill in the information
 getWeatherButton.addEventListener("click", async (e) => {
-  e.preventDefault();
   let userCityInput = document.querySelector("#city-input-field").value;
   let convertedUserCity = userCityInput.split(" ").join("-");
-  returnedData = await getWeather(convertedUserCity);
-  //add imperial data lengths to starter values
-  for (let i = 0; i < returnedData.days.length; i++) {
-    returnedData.days[i].tempmax = String(`${returnedData.days[i].tempmax} F°`);
-    returnedData.days[i].tempmin = String(`${returnedData.days[i].tempmin} F°`);
-    returnedData.days[i].temp = String(`${returnedData.days[i].temp} F°`);
-    returnedData.days[i].precip = String(
-      `${returnedData.days[i].precip} inches`,
-    );
-    returnedData.days[i].snow = String(`${returnedData.days[i].snow} inches`);
-    returnedData.days[i].windspeed = String(
-      `${returnedData.days[i].windspeed} mph `,
-    );
-  }
+  //if users entry is at least 3 characters long, run
+  if (userCityInput.length > 2) {
+    //modal to tell user the application is loading
+    loadingModal();
+    returnedData = await getWeather(convertedUserCity);
+    //add imperial data lengths to starter values
+    for (let i = 0; i < returnedData.days.length; i++) {
+      returnedData.days[i].tempmax = String(
+        `${returnedData.days[i].tempmax} F°`,
+      );
+      returnedData.days[i].tempmin = String(
+        `${returnedData.days[i].tempmin} F°`,
+      );
+      returnedData.days[i].temp = String(`${returnedData.days[i].temp} F°`);
+      returnedData.days[i].precip = String(
+        `${returnedData.days[i].precip} inches`,
+      );
+      returnedData.days[i].snow = String(`${returnedData.days[i].snow} inches`);
+      returnedData.days[i].windspeed = String(
+        `${returnedData.days[i].windspeed} mph `,
+      );
+    }
+    hideLoadingModal();
 
-  //call function to build current day
-  buildToday(returnedData);
-  //call the function to fill in the next 7 days weather information (using slice to skip over the current day aka days[0])
-  fillNextSeven(returnedData.days.slice(1));
+    //call function to build current day
+    buildToday(returnedData);
+    //call the function to fill in the next 7 days weather information (using slice to skip over the current day aka days[0])
+    fillNextSeven(returnedData.days.slice(1));
+  }
 });
 
 //function that builds content for current/todays weather
@@ -288,6 +297,20 @@ function convertInchesToMillimeters(inches) {
 function convertMillimetersToInches(millimeters) {
   return (millimeters / 25.4).toFixed(2);
 }
-//error reporting functionality for when users try to enter invalid data to the input field
 
 //loading modal /animation while request is processing
+function loadingModal() {
+  let loadingModal = document.createElement("div");
+  let loadingContent = document.createElement("p");
+  loadingContent.id = "loading-content";
+  loadingContent.textContent = "LOADING...";
+  loadingModal.appendChild(loadingContent);
+  loadingModal.id = "loading-modal";
+  document.querySelector("body").appendChild(loadingModal);
+}
+function hideLoadingModal() {
+  document.querySelector("#loading-modal").remove();
+}
+
+//error reporting functionality for when users try to enter invalid data to the input field
+//api constraint minlength of 3 show error below input field using a span
