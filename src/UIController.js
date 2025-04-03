@@ -91,7 +91,7 @@ userInputField.addEventListener("input", (e) => {
 
 //function that builds content for current/todays weather
 function buildToday(weatherData) {
-  //wipe any child elements in the current-day eleemnt if there is anything
+  //wipe any child elements in the current-day element if there is anything
   while (currentDay.firstChild) {
     currentDay.removeChild(currentDay.firstChild);
   }
@@ -247,9 +247,9 @@ function fillNextSeven(weatherDaysArr) {
     tempDaySection.appendChild(tempLowHigh);
     //if precipitation then how much is anticipated
     if (weatherDaysArr[i].precip > 0) {
-      let temmpPrecipitation = document.createElement("p");
-      temmpPrecipitation.textContent = `Precipitation: ${weatherDaysArr[i].precip} inches`;
-      tempDaySection.appendChild(temmpPrecipitation);
+      let tempPrecipitation = document.createElement("p");
+      tempPrecipitation.textContent = `Precipitation: ${weatherDaysArr[i].precip} inches`;
+      tempDaySection.appendChild(tempPrecipitation);
     }
     //if snow then how much is anticipated
     if (weatherDaysArr[i].snow > 0) {
