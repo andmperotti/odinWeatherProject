@@ -231,6 +231,7 @@ function pickBackgroundImage(iconData) {
       break;
   }
 }
+//these don't work, the images don't display
 
 //function to fill in  the next 7 days of weather information
 function fillNextSeven(weatherDaysArr) {
