@@ -1,4 +1,7 @@
 import { getWeather } from "./weatherOperations.js";
+import rainyImg from "./images/rainy.jpg";
+import sunnyImg from "./images/sunny.jpg";
+import cloudyImg from "./images/cloudy.jpg";
 
 let getWeatherButton = document.querySelector("#get-weather-button");
 let convertButton = document.querySelector("#convert");
@@ -17,6 +20,7 @@ getWeatherButton.addEventListener("click", async (e) => {
     userInputField.setCustomValidity("");
     //modal to tell user the application is loading
     loadingModal();
+    //request the data from the api
     returnedData = await getWeather(userCityInput);
     //if there is no error in the return object
     if (!returnedData.error) {
@@ -204,30 +208,13 @@ function getWindDirection(directionDeg) {
 function pickBackgroundImage(iconData) {
   switch (iconData) {
     case "clear-day":
-      (async () => {
-        let imageModule = await import(
-          /* webpackMode: "lazy" */
-          `./images/sunny.jpg`
-        );
-      })();
+      return sunnyImg;
       break;
     case "rain":
-      (async () => {
-        let imageModule = await import(
-          /* webpackMode: "lazy" */
-          `./images/cloudy.jpg`
-        );
-      })();
+      return rainyImg;
       break;
     case "partly-cloudy-day":
-      (async () => {
-        let imageModule = await import(
-          /* webpackMode: "lazy" */
-          `./images/cloudy.jpg`
-        );
-        return imageModule.default;
-      })();
-      // import(`./images/cloudy.jpg`).then((data) => data.default);
+      return cloudyImg;
       break;
   }
 }
@@ -281,7 +268,6 @@ function fillNextSeven(weatherDaysArr) {
     //change background image of tempDay
     let backgroundImage = pickBackgroundImage(weatherDaysArr[i].icon);
     tempDaySection.style.background = `no-repeat url(${backgroundImage})`;
-    tempDaySection.style.backgroundImage = backgroundImage;
     tempDaySection.style.backgroundSize = "cover";
   }
 }
@@ -375,10 +361,3 @@ function loadingModal() {
 function hideLoadingModal() {
   document.querySelector("#loading-modal").remove();
 }
-
-//ok error showing up, however thats whenever there is an error at all, I'd like to be able to dwindle down when an input doesn't yield a result vs our app is out of api requests or the api is down, etc
-
-//can i use what i have for when returnedData.error === SyntaxError?
-//and add another message when returnedData.error === different values?
-
-//so i tried to use the response's error property, which returned another object, that had a message property with a specific value when i typed in a bad location to output the input error message to the user however it doesn't execute the code and throws the error into the console because I think from unhandledRejectionError default behavior
