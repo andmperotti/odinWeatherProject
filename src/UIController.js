@@ -1,7 +1,4 @@
 import { getWeather } from "./weatherOperations.js";
-import rainyImg from "./images/rainy.jpg";
-import sunnyImg from "./images/sunny.jpg";
-import cloudyImg from "./images/cloudy.jpg";
 
 let getWeatherButton = document.querySelector("#get-weather-button");
 let convertButton = document.querySelector("#convert");
@@ -207,13 +204,30 @@ function getWindDirection(directionDeg) {
 function pickBackgroundImage(iconData) {
   switch (iconData) {
     case "clear-day":
-      return sunnyImg;
+      (async () => {
+        let imageModule = await import(
+          /* webpackMode: "lazy" */
+          `./images/sunny.jpg`
+        );
+      })();
       break;
     case "rain":
-      return rainyImg;
+      (async () => {
+        let imageModule = await import(
+          /* webpackMode: "lazy" */
+          `./images/cloudy.jpg`
+        );
+      })();
       break;
     case "partly-cloudy-day":
-      return cloudyImg;
+      (async () => {
+        let imageModule = await import(
+          /* webpackMode: "lazy" */
+          `./images/cloudy.jpg`
+        );
+        return imageModule.default;
+      })();
+      // import(`./images/cloudy.jpg`).then((data) => data.default);
       break;
   }
 }
@@ -266,6 +280,7 @@ function fillNextSeven(weatherDaysArr) {
     //change background image of tempDay
     let backgroundImage = pickBackgroundImage(weatherDaysArr[i].icon);
     tempDaySection.style.background = `no-repeat url(${backgroundImage})`;
+    tempDaySection.style.backgroundImage = backgroundImage;
     tempDaySection.style.backgroundSize = "cover";
   }
 }
